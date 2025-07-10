@@ -1,0 +1,50 @@
+﻿@model IEnumerable<MarketCore.Models.CustomerVendor>
+@{
+    ViewData["Title"] = "العملاء والموردين";
+}
+
+<h2>العملاء والموردين</h2>
+
+<div class="mb-3">
+    <a asp-action="Create" class="btn btn-primary">إضافة جديد</a>
+    <a asp-action="Index" asp-route-isCustomer="true" class="btn btn-outline-info">عرض العملاء</a>
+    <a asp-action="Index" asp-route-isCustomer="false" class="btn btn-outline-warning">عرض الموردين</a>
+    <a asp-action="Index" class="btn btn-outline-secondary">الكل</a>
+</div>
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>الاسم</th>
+            <th>الهاتف</th>
+            <th>الموبايل</th>
+            <th>النوع</th>
+            <th>الإجراءات</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Name</td>
+                <td>@item.Phone</td>
+                <td>@item.Mobile</td>
+                <td>
+                    @if (item.IsCustomer)
+                    {
+                        <span class="badge bg-info">عميل</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-warning text-dark">مورد</span>
+                    }
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-warning">تعديل</a>
+                    <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-sm btn-info">تفاصيل</a>
+                    <a asp-action="Delete" asp-route-id="@item.ID" class="btn btn-sm btn-danger">حذف</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

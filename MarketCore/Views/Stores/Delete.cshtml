@@ -1,0 +1,21 @@
+﻿@model MarketCore.Models.Store
+@{
+    ViewData["Title"] = "حذف مخزن";
+}
+
+<h2>تأكيد الحذف</h2>
+
+<div class="alert alert-danger">
+    هل أنت متأكد أنك تريد حذف هذا المخزن؟
+</div>
+
+<dl class="row">
+    <dt class="col-sm-3">الاسم</dt>
+    <dd class="col-sm-9">@Model.Name</dd>
+</dl>
+
+<form asp-action="Delete">
+    <input type="hidden" asp-for="ID" />
+    <button type="submit" class="btn btn-danger">حذف</button>
+    <a asp-action="Index" class="btn btn-secondary">إلغاء</a>
+</form>

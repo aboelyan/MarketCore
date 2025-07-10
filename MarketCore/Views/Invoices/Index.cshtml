@@ -1,0 +1,102 @@
+﻿@model List<MarketCore.Models.InvoiceHeader>
+@{
+    ViewData["Title"] = "قائمة الفواتير";
+    var invoiceTypes = new Dictionary<int, string>
+    {
+        {1, "شراء"},
+        {2, "بيع"},
+        {3, "مرتجع شراء"},
+        {4, "مرتجع بيع"}
+    };
+}
+
+<h2 class="mb-4">📄 قائمة الفواتير</h2>
+
+<form method="get" class="row g-3 mb-3">
+    <div class="col-md-3">
+        <label class="form-label">نوع الفاتورة</label>
+        <select name="type" class="form-select">
+            <option value="">-- الكل --</option>
+            @foreach (var type in invoiceTypes)
+            {
+                <option value="@type.Key">@type.Value</option>
+            }
+        </select>
+    </div>
+
+    <div class="col-md-3">
+        <label class="form-label">من تاريخ</label>
+        <input name="from" type="date" class="form-control" />
+    </div>
+
+    <div class="col-md-3">
+        <label class="form-label">إلى تاريخ</label>
+        <input name="to" type="date" class="form-control" />
+    </div>
+
+    <div class="col-md-3 d-flex align-items-end">
+        <button type="submit" class="btn btn-primary me-2">🔍 بحث</button>
+        <a asp-action="Create" class="btn btn-success">➕ فاتورة جديدة</a>
+    </div>
+</form>
+
+<table class="table table-bordered table-striped">
+    <thead class="table-dark">
+        <tr>
+            <th>#</th>
+            <th>النوع</th>
+            <th>رقم الفاتورة</th>
+            <th>التاريخ</th>
+            <th>الطرف</th>
+            <th>الصافي</th>
+            <th>المدفوع</th>
+            <th>الباقي</th>
+            <th>ترحيل</th>
+            <th>الإجراءات</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.Any())
+        {
+            var parties = ViewBag.Parties as List<CustomerVendor>;
+            foreach (var item in Model)
+            {
+                var typeName = invoiceTypes.TryGetValue((int)item.InvoiceType, out var name) ? name : "غير معروف";
+                var party = item.PartID.HasValue
+                ? parties.FirstOrDefault(p => p.ID == item.PartID)?.Name ?? "-"
+                : "-";
+
+
+                <tr>
+                    <td>@item.ID</td>
+                    <td>@typeName</td>
+                    <td>@item.Code</td>
+                    <td>@item.Date.ToString("yyyy-MM-dd")</td>
+                    <td>@party</td>
+                    <td>@item.Net.ToString("N2")</td>
+                    <td>@item.Paid.ToString("N2")</td>
+                    <td>@item.Remaing.ToString("N2")</td>
+                    <td>
+                        @if (item.PostedToStore)
+                        {
+                            <span class="badge bg-success">✔️</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-warning text-dark">✖️</span>
+                        }
+                    </td>
+                    <td>
+                        <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-sm btn-info">عرض</a>
+                        <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-primary">تعديل</a>
+                        <a asp-action="Delete" asp-route-id="@item.ID" class="btn btn-sm btn-danger">حذف</a>
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr><td colspan="10" class="text-center text-muted">لا توجد فواتير</td></tr>
+        }
+    </tbody>
+</table>

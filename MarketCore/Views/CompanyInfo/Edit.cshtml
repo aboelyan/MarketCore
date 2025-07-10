@@ -1,0 +1,42 @@
+﻿@model MarketCore.Models.CompanyInfo
+
+@{
+    ViewData["Title"] = "بيانات الشركة";
+}
+
+<h2>بيانات الشركة</h2>
+
+<form asp-action="Edit" enctype="multipart/form-data" method="post">
+    <input type="hidden" asp-for="ID" />
+
+    <div class="mb-3">
+        <label asp-for="CompanyName" class="form-label">اسم الشركة</label>
+        <input asp-for="CompanyName" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Phone" class="form-label">الهاتف</label>
+        <input asp-for="Phone" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Mobile" class="form-label">الموبايل</label>
+        <input asp-for="Mobile" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Address" class="form-label">العنوان</label>
+        <input asp-for="Address" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">الشعار</label><br />
+        @if (Model.Logo != null)
+        {
+            <img src="@Url.Action("GetLogo")" style="max-height:100px;" />
+        }
+        <input type="file" name="logoFile" class="form-control" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">حفظ</button>
+</form>

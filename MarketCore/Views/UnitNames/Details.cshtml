@@ -1,0 +1,14 @@
+﻿@model UnitName
+@{
+    ViewData["Title"] = "تفاصيل الوحدة";
+}
+
+<h2>📄 تفاصيل الوحدة</h2>
+
+<div class="mb-3">
+    <label class="form-label">الاسم:</label>
+    <p class="form-control-plaintext">@Model.Name</p>
+</div>
+
+<a asp-action="Edit" asp-route-id="@Model.ID" class="btn btn-warning">✏️ تعديل</a>
+<a asp-action="Index" class="btn btn-secondary">رجوع</a>

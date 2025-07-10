@@ -1,0 +1,46 @@
+﻿@model List<MarketCore.Models.Product>
+
+@{
+    ViewData["Title"] = "قائمة المنتجات";
+}
+
+<h2 class="mb-4">📦 قائمة المنتجات</h2>
+
+<table class="table table-bordered table-striped">
+    <thead class="table-dark">
+        <tr>
+            <th>كود المنتج</th>
+            <th>الاسم</th>
+            <th>التصنيف</th>
+            <th>نشط</th>
+            <th>إجراءات</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Code</td>
+                <td>@item.Name</td>
+                <td>@item.Category?.Name</td>
+                <td>
+                    @if (item.IsActive)
+                    {
+                        <span class="badge bg-success">✅</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-danger">❌</span>
+                    }
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-primary">✏️ تعديل</a>
+                    <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-sm btn-info">📄 تفاصيل</a>
+                    <a asp-action="Delete" asp-route-id="@item.ID" class="btn btn-sm btn-danger">🗑 حذف</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a asp-action="Create" class="btn btn-success">➕ إضافة منتج جديد</a>

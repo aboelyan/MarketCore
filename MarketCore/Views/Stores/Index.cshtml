@@ -1,0 +1,38 @@
+﻿@model IEnumerable<MarketCore.Models.Store>
+@{
+    ViewData["Title"] = "إدارة المخازن";
+}
+
+<h2>المخازن</h2>
+
+<a asp-action="Create" class="btn btn-primary mb-3">إضافة مخزن جديد</a>
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>الاسم</th>
+            <th>أكواد الحسابات</th>
+            <th>الإجراءات</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var store in Model)
+        {
+            <tr>
+                <td>@store.Name</td>
+                <td>
+                    مبيعات: @store.SalesAccountID <br />
+                    مردودات: @store.SalesReturnAccountID <br />
+                    جرد: @store.InventoryAccountID <br />
+                    تكلفة: @store.CostOfSoldGoodsAccountID <br />
+                    خصم مسموح: @store.DiscountAllowedAccountID <br />
+                    خصم مكتسب: @store.DiscountReceivedAccountID
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@store.ID" class="btn btn-sm btn-warning">تعديل</a>
+                    <a asp-action="Delete" asp-route-id="@store.ID" class="btn btn-sm btn-danger">حذف</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

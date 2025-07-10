@@ -1,0 +1,46 @@
+﻿@model MarketCore.Models.Store
+@{
+    ViewData["Title"] = "إضافة مخزن";
+}
+
+<h2>إضافة مخزن</h2>
+
+<form asp-action="Create">
+    <div class="mb-3">
+        <label asp-for="Name" class="form-label">اسم المخزن</label>
+        <input asp-for="Name" class="form-control" />
+    </div>
+
+    <div class="row">
+        <div class="col-md-4">
+            <label>حساب المبيعات</label>
+            <input asp-for="SalesAccountID" class="form-control" />
+        </div>
+        <div class="col-md-4">
+            <label>مردودات المبيعات</label>
+            <input asp-for="SalesReturnAccountID" class="form-control" />
+        </div>
+        <div class="col-md-4">
+            <label>حساب الجرد</label>
+            <input asp-for="InventoryAccountID" class="form-control" />
+        </div>
+    </div>
+
+    <div class="row mt-2">
+        <div class="col-md-4">
+            <label>تكلفة البضاعة المباعة</label>
+            <input asp-for="CostOfSoldGoodsAccountID" class="form-control" />
+        </div>
+        <div class="col-md-4">
+            <label>خصم مسموح</label>
+            <input asp-for="DiscountAllowedAccountID" class="form-control" />
+        </div>
+        <div class="col-md-4">
+            <label>خصم مكتسب</label>
+            <input asp-for="DiscountReceivedAccountID" class="form-control" />
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-success mt-3">حفظ</button>
+    <a asp-action="Index" class="btn btn-secondary mt-3">رجوع</a>
+</form>

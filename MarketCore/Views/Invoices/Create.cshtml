@@ -1,0 +1,238 @@
+﻿@model MarketCore.ViewModels.InvoiceViewModel
+@using System.Text.Json
+@using MarketCore.Enums
+@using MarketCore.ViewModels
+
+@{
+    ViewData["Title"] = "إنشاء فاتورة";
+    var items = ViewBag.Items as SelectList;
+    var units = ViewBag.Units as SelectList;
+    var allParties = ViewBag.AllParties as List<PartyDto>;
+    var itemPrices = ViewBag.ItemsWithPrices as List<ProductUnitDto>;
+
+    var allPartiesJson = JsonSerializer.Serialize<List<PartyDto>>(allParties ?? new());
+    var itemPricesJson = JsonSerializer.Serialize<List<ProductUnitDto>>(itemPrices ?? new());
+    var unitsJson = JsonSerializer.Serialize(units.Select(u => new { value = u.Value, text = u.Text }));
+    var selectedInvoiceType = (int)Model.SelectedInvoiceType;
+}
+
+<h2 class="mb-4">🧾 إنشاء فاتورة</h2>
+
+<form asp-action="Create" method="post">
+    <input type="hidden" asp-for="SelectedInvoiceType" id="SelectedInvoiceType" value="@selectedInvoiceType" />
+
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">📋 بيانات الفاتورة</div>
+        <div class="card-body row g-3">
+
+            <div class="col-md-4">
+                <label class="form-label">نوع الفاتورة</label>
+                <select class="form-select" id="invoiceType" name="SelectedInvoiceType">
+                    @{
+                        var types = new[]
+                        {
+                    new { Value = 1, Text = "🛒 شراء" },
+                    new { Value = 2, Text = "💰 بيع" },
+                    new { Value = 3, Text = "↩️ مرتجع شراء" },
+                    new { Value = 4, Text = "↩️ مرتجع بيع" }
+                    };
+                    }
+                    @foreach (var type in types)
+                    {
+                        <option value="@type.Value" selected="@(type.Value == selectedInvoiceType)">
+                            @type.Text
+                        </option>
+                    }
+                </select>
+            </div>
+
+            <div class="col-md-4">
+                <label class="form-label">الطرف (عميل/مورد)</label>
+                <select asp-for="Header.PartID" class="form-select" id="partySelect">
+                    <option value="">-- اختر الطرف --</option>
+                </select>
+            </div>
+
+            <div class="col-md-4">
+                <label asp-for="Header.Date" class="form-label">التاريخ</label>
+                <input asp-for="Header.Date" class="form-control" type="date" />
+            </div>
+
+            <div class="col-md-4">
+                <label asp-for="Header.Code" class="form-label">رقم الفاتورة</label>
+                <input asp-for="Header.Code" class="form-control" />
+            </div>
+
+            <div class="col-md-4">
+                <label asp-for="Header.Tax" class="form-label">الضريبة %</label>
+                <input asp-for="Header.Tax" class="form-control" type="number" step="0.01" />
+            </div>
+
+            <div class="col-md-4">
+                <label asp-for="Header.DiscountRation" class="form-label">نسبة الخصم</label>
+                <input asp-for="Header.DiscountRation" class="form-control" type="number" step="0.01" />
+            </div>
+
+            <div class="col-md-4">
+                <label asp-for="Header.Expences" class="form-label">المصاريف</label>
+                <input asp-for="Header.Expences" class="form-control" type="number" step="0.01" />
+            </div>
+
+            <div class="col-md-4">
+                <label asp-for="Header.Paid" class="form-label">المدفوع</label>
+                <input asp-for="Header.Paid" class="form-control" type="number" step="0.01" />
+            </div>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header bg-success text-white">📦 تفاصيل الأصناف</div>
+        <div class="card-body">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>الصنف</th>
+                        <th>الوحدة</th>
+                        <th>الكمية</th>
+                        <th>السعر</th>
+                        <th>الخصم</th>
+                        <th>الإجمالي</th>
+                        <th>تكلفة</th>
+                        <th>إجمالي التكلفة</th>
+                        <th>المخزن</th>
+                        <th>✖</th>
+                    </tr>
+                </thead>
+                <tbody id="detailsBody"></tbody>
+            </table>
+            <button type="button" class="btn btn-outline-primary" onclick="addRow()">➕ إضافة صنف</button>
+        </div>
+    </div>
+
+    <div class="text-end">
+        <button type="submit" class="btn btn-success">💾 حفظ</button>
+        <a asp-action="Index" class="btn btn-secondary">إلغاء</a>
+    </div>
+</form>
+
+@section Scripts {
+    <script>
+        let rowIndex = 0;
+        const allParties = @Html.Raw(allPartiesJson);
+        const itemPrices = @Html.Raw(itemPricesJson);
+        const units = @Html.Raw(unitsJson);
+        let selectedInvoiceType = parseInt(document.getElementById("SelectedInvoiceType").value);
+
+        function addRow() {
+            const row = `
+            <tr>
+                <td>
+                    <select name="Details[${rowIndex}].ItemID" class="form-select itemSelect">
+                        <option value="">اختر صنف</option>
+        @foreach (var item in items)
+        {
+            <text><option value="@item.Value">@item.Text</option></text>
+        }
+                    </select>
+                </td>
+                <td>
+                    <select name="Details[${rowIndex}].ItemUnitID" class="form-select unitSelect">
+                        <option value="">اختر وحدة</option>
+                        ${units.map(u => `<option value="${u.value}">${u.text}</option>`).join('')}
+                    </select>
+                </td>
+                <td><input name="Details[${rowIndex}].ItemQty" type="number" class="form-control qty" /></td>
+                <td><input name="Details[${rowIndex}].Price" type="number" class="form-control price" /></td>
+                <td><input name="Details[${rowIndex}].Discount" type="number" class="form-control discount" /></td>
+                <td><input name="Details[${rowIndex}].TotalPrice" class="form-control total" readonly /></td>
+                <td><input name="Details[${rowIndex}].CostValue" type="number" class="form-control" /></td>
+                <td><input name="Details[${rowIndex}].TotalCostValue" type="number" class="form-control" /></td>
+                <td><input name="Details[${rowIndex}].StoreID" type="number" class="form-control" /></td>
+                <td><button type="button" class="btn btn-danger btn-sm" onclick="removeRow(this)">✖</button></td>
+            </tr>`;
+            document.getElementById("detailsBody").insertAdjacentHTML("beforeend", row);
+            bindEvents();
+            bindItemPrice(document.querySelector("#detailsBody tr:last-child"));
+            rowIndex++;
+        }
+
+        function removeRow(btn) {
+            btn.closest("tr").remove();
+        }
+
+        function bindEvents() {
+            document.querySelectorAll(".qty, .price, .discount").forEach(input => {
+                input.removeEventListener('input', recalculate);
+                input.addEventListener('input', recalculate);
+            });
+        }
+
+        function recalculate() {
+            const row = this.closest("tr");
+            const qty = parseFloat(row.querySelector(".qty").value) || 0;
+            const price = parseFloat(row.querySelector(".price").value) || 0;
+            const discount = parseFloat(row.querySelector(".discount").value) || 0;
+            row.querySelector(".total").value = ((qty * price) - discount).toFixed(2);
+        }
+
+        function bindItemPrice(row) {
+            const itemSelect = row.querySelector(".itemSelect");
+            const unitSelect = row.querySelector(".unitSelect");
+            const priceInput = row.querySelector(".price");
+
+            function updatePrice() {
+                const itemId = parseInt(itemSelect.value);
+                const unitId = parseInt(unitSelect.value);
+                const match = itemPrices.find(p => p.ProductID === itemId && p.UnitID === unitId);
+                if (match) {
+                    priceInput.value = (selectedInvoiceType === 1 || selectedInvoiceType === 3)
+                        ? match.BuyPrice.toFixed(2)
+                        : match.SellPrice.toFixed(2);
+                } else {
+                    priceInput.value = "0.00";
+                }
+                recalculate.call(priceInput);
+            }
+
+            itemSelect.addEventListener("change", updatePrice);
+            unitSelect.addEventListener("change", updatePrice);
+        }
+
+        function loadParties(type) {
+            const partySelect = document.getElementById("partySelect");
+            partySelect.innerHTML = '<option value="">-- اختر الطرف --</option>';
+            let filtered = [];
+
+            if (type === 1 || type === 3) {
+                filtered = allParties.filter(p => p.Type === 1); // الموردين
+            } else {
+                filtered = allParties.filter(p => p.Type === 2); // العملاء
+            }
+
+            filtered.forEach(p => {
+                const option = document.createElement("option");
+                option.value = p.ID;
+                option.textContent = p.Name;
+                partySelect.appendChild(option);
+            });
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const invoiceTypeSelect = document.getElementById("invoiceType");
+            const selectedTypeInput = document.getElementById("SelectedInvoiceType");
+
+            if (selectedTypeInput.value) {
+                loadParties(parseInt(selectedTypeInput.value));
+            }
+
+            invoiceTypeSelect.addEventListener("change", function () {
+                const selected = parseInt(this.value);
+                selectedTypeInput.value = selected;
+                selectedInvoiceType = selected;
+                loadParties(selected);
+            });
+
+            addRow();
+        });
+    </script>
+}

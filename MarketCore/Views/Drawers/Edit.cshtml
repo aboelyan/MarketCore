@@ -1,0 +1,24 @@
+﻿@model MarketCore.Models.Drawer
+
+@{
+    ViewData["Title"] = "تعديل درج";
+}
+
+<h2>تعديل الدرج</h2>
+
+<form asp-action="Edit" method="post">
+    <input type="hidden" asp-for="ID" />
+
+    <div class="mb-3">
+        <label asp-for="Name" class="form-label">اسم الدرج</label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">تحديث</button>
+    <a asp-action="Index" class="btn btn-secondary">رجوع</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

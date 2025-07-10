@@ -1,0 +1,25 @@
+﻿@model MarketCore.Models.Drawer
+
+@{
+    ViewData["Title"] = "حذف درج";
+}
+
+<h2>تأكيد الحذف</h2>
+
+<div class="alert alert-danger">
+    هل أنت متأكد أنك تريد حذف الدرج التالي؟
+</div>
+
+<dl class="row">
+    <dt class="col-sm-2">رقم الدرج</dt>
+    <dd class="col-sm-10">@Model.ID</dd>
+
+    <dt class="col-sm-2">الاسم</dt>
+    <dd class="col-sm-10">@Model.Name</dd>
+</dl>
+
+<form asp-action="Delete">
+    <input type="hidden" asp-for="ID" />
+    <button type="submit" class="btn btn-danger">حذف</button>
+    <a asp-action="Index" class="btn btn-secondary">إلغاء</a>
+</form>

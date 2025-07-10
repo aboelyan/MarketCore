@@ -1,0 +1,32 @@
+﻿@model MarketCore.Models.CustomerVendor
+
+@{
+    ViewData["Title"] = "تفاصيل";
+}
+
+<h2>تفاصيل العميل / المورد</h2>
+
+<dl class="row">
+    <dt class="col-sm-2">الاسم</dt>
+    <dd class="col-sm-10">@Model.Name</dd>
+
+    <dt class="col-sm-2">الهاتف</dt>
+    <dd class="col-sm-10">@Model.Phone</dd>
+
+    <dt class="col-sm-2">الموبايل</dt>
+    <dd class="col-sm-10">@Model.Mobile</dd>
+
+    <dt class="col-sm-2">العنوان</dt>
+    <dd class="col-sm-10">@Model.Address</dd>
+
+    <dt class="col-sm-2">رقم الحساب</dt>
+    <dd class="col-sm-10">@Model.AccountID</dd>
+
+    <dt class="col-sm-2">النوع</dt>
+    <dd class="col-sm-10">
+        @(Model.IsCustomer ? "عميل" : "مورد")
+    </dd>
+</dl>
+
+<a asp-action="Edit" asp-route-id="@Model.ID" class="btn btn-warning">تعديل</a>
+<a asp-action="Index" class="btn btn-secondary">رجوع</a>

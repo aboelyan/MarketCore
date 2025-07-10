@@ -1,0 +1,15 @@
+﻿@model MarketCore.Models.ProductCategory
+
+<h2>تفاصيل الفئة</h2>
+
+<div>
+    <dl class="row">
+        <dt class="col-sm-2">الاسم</dt>
+        <dd class="col-sm-10">@Model.Name</dd>
+
+        <dt class="col-sm-2">الرقم</dt>
+        <dd class="col-sm-10">@Model.Number</dd>
+    </dl>
+    <a asp-action="Edit" asp-route-id="@Model.ID" class="btn btn-warning">تعديل</a>
+    <a asp-action="Index" class="btn btn-secondary">رجوع</a>
+</div>

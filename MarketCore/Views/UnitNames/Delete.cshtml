@@ -1,0 +1,18 @@
+﻿@model UnitName
+@{
+    ViewData["Title"] = "حذف وحدة";
+}
+
+<h2>🗑️ حذف وحدة</h2>
+
+<h4>هل أنت متأكد من حذف هذه الوحدة؟</h4>
+
+<div class="mb-3">
+    <strong>الاسم:</strong> @Model.Name
+</div>
+
+<form asp-action="DeleteConfirmed" method="post">
+    <input type="hidden" asp-for="ID" />
+    <button type="submit" class="btn btn-danger">✔️ تأكيد الحذف</button>
+    <a asp-action="Index" class="btn btn-secondary">رجوع</a>
+</form>

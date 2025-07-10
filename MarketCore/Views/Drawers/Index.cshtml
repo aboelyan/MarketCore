@@ -1,0 +1,32 @@
+﻿@model IEnumerable<MarketCore.Models.Drawer>
+
+@{
+    ViewData["Title"] = "الخزائن";
+}
+
+<h2>الخزائن / الكاشيرات</h2>
+
+<a asp-action="Create" class="btn btn-primary mb-3">إضافة درج جديد</a>
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>الرقم</th>
+            <th>الاسم</th>
+            <th>الإجراءات</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.ID</td>
+                <td>@item.Name</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-warning">تعديل</a>
+                    <a asp-action="Delete" asp-route-id="@item.ID" class="btn btn-sm btn-danger">حذف</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

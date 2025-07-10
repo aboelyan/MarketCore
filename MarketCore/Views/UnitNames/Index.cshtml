@@ -1,0 +1,30 @@
+﻿@model IEnumerable<UnitName>
+@{
+    ViewData["Title"] = "الوحدات";
+}
+
+<h2>📦 قائمة الوحدات</h2>
+
+<a asp-action="Create" class="btn btn-primary mb-3">➕ إضافة وحدة جديدة</a>
+
+<table class="table table-bordered table-striped">
+    <thead class="table-light">
+        <tr>
+            <th>الاسم</th>
+            <th>الإجراءات</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Name</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-warning">✏️ تعديل</a>
+                    <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-sm btn-info">📄 تفاصيل</a>
+                    <a asp-action="Delete" asp-route-id="@item.ID" class="btn btn-sm btn-danger">🗑️ حذف</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
